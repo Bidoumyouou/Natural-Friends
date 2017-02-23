@@ -1,0 +1,32 @@
+#ifndef DEF_GAME_H
+#define DEF_GAME_H
+#include "Resource.h"
+#include "state.h"
+#include "StateBase.h"
+
+//////////////////
+//タイトル、メイン、リザルト
+//以外の状態を持たせたいならstate.cppにいって真似して追加すべし
+//////////////////
+
+class GameMgr:public CSbase{
+private:
+	int typenum;
+	int typeexi;
+	void Object_Process();//オブジェクトを動かす関数
+	void Object_Draw();
+
+public:
+	GameMgr();
+	~GameMgr();
+	void Init();
+	void Finish();
+	void Process();
+	void Draw();
+	int t;
+	void AllObjectProcess();
+	void AllObjectDraw();
+};
+
+extern GameMgr* m_GameMgr;
+#endif

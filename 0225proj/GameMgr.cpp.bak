@@ -1,0 +1,102 @@
+#include "GameMgr.h"
+#include "Dxlib.h"
+#include "key.h"
+
+#include "class.h"
+#include "Player.h"
+//以下はテスト以外では不要
+#include"ObjectList.h"
+#include"Camera.h"
+#include"View.h"
+#include"HitBox.h"
+//////////////////////
+//GameMgrクラス
+//旧来のクラスを使わないプログラムでいうところの
+//「ゲームのメインモードのWhileループ内」に相当する。
+//ゲームオーバーになったときなどは
+//G_Next_GameState = RESULT などと書くと
+//リザルトに移行できる。
+//
+//
+///////////////////////
+GameMgr::GameMgr(){
+	timerinit();
+	Camera.init();
+	View.init();
+	View.mgr = this;//Viewクラスに
+}
+
+GameMgr::~GameMgr(){
+	
+
+}
+
+void GameMgr::Process(){
+	Camera.Process();
+	View.Process();
+
+	//時間経過を測る
+	t++;
+
+	Object_Process();
+	//Tが押されたらクラス一発作成
+	if (sKey[KEY_INPUT_T].var == 1){
+		C_Player::Make();
+	}
+	
+	//Aが押されたらダミー(白い正方形)を削除
+	
+	if (sKey[KEY_INPUT_A].var == 1){
+		if (C_Player::GetObject_n()){
+			int temp;
+			do {
+				temp = GetRand(C_Player::total - 1);
+			} while (!C_Player::exi[temp]);
+			C_Player::Delete(temp);
+		}
+	}
+
+	//Eが押されたらタイトルへ戻る
+	if (sKey[KEY_INPUT_E].var == 1) {
+		G_Next_GameState = TITLE;
+	}
+}
+
+void GameMgr::Object_Process()
+{
+	
+	C_Player::AllProcess();
+	C_HitBox::AllProcess();
+
+}
+
+void GameMgr::Draw(){
+	Camera.Draw();
+	View.Draw();
+	Object_Draw();
+	View.Draw2();
+}
+
+void GameMgr::Object_Draw()
+{
+	C_Player::AllDraw();
+	C_HitBox::AllDraw();
+}
+
+void GameMgr::Init(){
+	//PlaySoundMem(G_MUSIC_00, DX_PLAYTYPE_BACK, true);
+	//テスト用のオブジェクトの設置
+	player[0] = new C_Player(0);
+	player[1] = new C_Player(1);
+	
+}
+void GameMgr::Finish(){
+	//モード遷移時に削除したいオブジェクトを
+	//削除したり初期化したりする
+	C_Player::AllDelete();
+	C_HitBox::AllDelete();
+
+	StopSoundMem(G_MUSIC_00);
+}
+
+GameMgr* m_GameMgr;

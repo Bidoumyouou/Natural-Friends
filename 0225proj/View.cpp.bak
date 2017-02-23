@@ -1,0 +1,26 @@
+#include "View.h"
+#include"Resource.h"
+#include"Camera.h"
+void C_View::init()
+{
+	//画像ハンドルの適用
+	Back_G = Back_Graph[0];
+}
+
+void C_View::Draw()
+{
+	DrawRotaGraph((Back_G.size.x / 2) - Camera.UpperLeft_pos.x, (Back_G.size.y / 2), 1, 0, Back_G.Handle, 0);
+	DrawBox(362, 10, 437, 85, RED, 1);
+	DrawBox(20, 40, 335, 85, YELLOW, 1);
+	DrawBox(10, 10, 85, 85, LIGHT_BLUE, 1);
+}
+
+void C_View::Draw2()
+{
+}
+
+void C_View::Process()
+{
+	
+}
+C_View View;

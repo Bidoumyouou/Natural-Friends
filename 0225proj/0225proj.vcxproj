@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B39E121B-76C8-4581-8FA5-5C22EC9E8574}</ProjectGuid>
+    <RootNamespace>My0225proj</RootNamespace>
+    <ProjectName>TeamDevelop</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\プロジェクトに追加すべきファイル_VC用;C:\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\プロジェクトに追加すべきファイル_VC用;C:\DxLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>C:\プロジェクトに追加すべきファイル_VC用;C:\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\プロジェクトに追加すべきファイル_VC用;C:\DxLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="anime.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="class.cpp" />
+    <ClCompile Include="CommonClass.cpp" />
+    <ClCompile Include="HitBox.cpp" />
+    <ClCompile Include="GameMgr.cpp" />
+    <ClCompile Include="GV.cpp" />
+    <ClCompile Include="key.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjectBase.cpp" />
+    <ClCompile Include="phadeout.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ReSource.cpp" />
+    <ClCompile Include="Result.cpp" />
+    <ClCompile Include="Select.cpp" />
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="state.cpp" />
+    <ClCompile Include="StateBase.cpp" />
+    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="View.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="anime.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="class.h" />
+    <ClInclude Include="CommonClass.h" />
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="HitBox.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="GameMgr.h" />
+    <ClInclude Include="GV.h" />
+    <ClInclude Include="key.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="ObjectBase.h" />
+    <ClInclude Include="ObjectList.h" />
+    <ClInclude Include="phadeout.h" />
+    <ClInclude Include="ReSource.h" />
+    <ClInclude Include="Result.h" />
+    <ClInclude Include="Select.h" />
+    <ClInclude Include="state.h" />
+    <ClInclude Include="StateBase.h" />
+    <ClInclude Include="Title.h" />
+    <ClInclude Include="View.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
