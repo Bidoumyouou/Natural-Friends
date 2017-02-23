@@ -4,7 +4,9 @@
 #include"GameMgr.h"
 #include"math.h"
 
-C_HitBox::C_HitBox(int arynum) : ObjectBase(arynum) {
+
+
+C_HitBox::C_HitBox(int arynum) : ObjectBase(arynum){
 	exi[arraynum] = true;
 	object_n++;
 	id = total;
@@ -37,7 +39,7 @@ void C_HitBox::Process()
 	player->hitbox_exi[Hitmode] = true;
 	if (!initflag) { ObjectBase::Init(); Init(); initflag = true; }
 	//状態によって分岐
-	switch (Hitmode) {
+	switch(Hitmode) {
 	case H_SLASH:Slash(); break;
 	case H_SLASHCHARGE:SlashCharge(); break;
 	case H_DEFENCE:Defence(); break;
@@ -49,8 +51,8 @@ void C_HitBox::Process()
 
 
 	//森絶対座標と相対座標の統一
-
-	if (Hitmode > 0 && Hitmode <= H_HitMode_N - 1) {
+	
+	if ( Hitmode > 0 && Hitmode <= H_HitMode_N - 1) {
 		//プレイヤーのposを保存
 		if (player != nullptr) {
 			p_pos = m_GameMgr->p_pos[p_gid[arraynum]];
@@ -58,7 +60,9 @@ void C_HitBox::Process()
 		if (Hitmode == H_SHOT) {
 			//プレイヤーの座標に依存しない
 			//abs_area.Set2p(area.v[0].x , area.v[0].y , area.v[1].x , area.v[1].y);
-			abs_area.Set2p(abs_area.v[0].x, abs_area.v[0].y, abs_area.v[1].x, abs_area.v[1].y);
+			//abs_area.Set2p(abs_area.v[0].x, abs_area.v[0].y, abs_area.v[1].x, abs_area.v[1].y);
+			abs_area.Set2p(area.v[0].x + p_pos.x, area.v[0].y + p_pos.y, area.v[1].x + p_pos.x, area.v[1].y + p_pos.y);
+
 		}
 		else {
 			//プレイヤーの座標に依存
@@ -168,7 +172,7 @@ void C_HitBox::Defence()
 					//ヒットボックスが座標内に入っていたら
 					for (int j = 0; j < 4; j++) {
 						//当たり判定ガバいので直す
-						if (HitBox[i]->abs_area.inSquare(abs_area.v[j])) {
+						if (HitBox[i]->abs_area.inSquare(abs_area.v[j]) || abs_area.inSquare(HitBox[i]->abs_area.v[j])) {
 							HitBox[i]->isHit = true;
 							player->Next_State = DAMEGE;
 							//ダメージステータス

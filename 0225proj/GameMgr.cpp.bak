@@ -24,6 +24,10 @@ GameMgr::GameMgr(){
 	Camera.init();
 	View.init();
 	View.mgr = this;//Viewクラスに
+	stagesize = View.Back_G.size.x;//フィールドのサイズ（現在は画像サイズに依存）
+	t = 0;
+	time = 99;
+	PlaySoundMem(Battle_Sound.Handle, DX_PLAYTYPE_LOOP);
 }
 
 GameMgr::~GameMgr(){
@@ -37,29 +41,15 @@ void GameMgr::Process(){
 
 	//時間経過を測る
 	t++;
+	if (t >= START_FRAME && t % 60 == 0) time--;
+	if (time < 0) time = 0;
 
 	Object_Process();
 	//Tが押されたらクラス一発作成
 	if (sKey[KEY_INPUT_T].var == 1){
 		C_Player::Make();
 	}
-	
-	//Aが押されたらダミー(白い正方形)を削除
-	
-	if (sKey[KEY_INPUT_A].var == 1){
-		if (C_Player::GetObject_n()){
-			int temp;
-			do {
-				temp = GetRand(C_Player::total - 1);
-			} while (!C_Player::exi[temp]);
-			C_Player::Delete(temp);
-		}
-	}
 
-	//Eが押されたらタイトルへ戻る
-	if (sKey[KEY_INPUT_E].var == 1) {
-		G_Next_GameState = TITLE;
-	}
 }
 
 void GameMgr::Object_Process()
@@ -67,7 +57,7 @@ void GameMgr::Object_Process()
 	
 	C_Player::AllProcess();
 	C_HitBox::AllProcess();
-
+	//deleteflagをtrueにしたHitBoxを削除する
 }
 
 void GameMgr::Draw(){
@@ -75,6 +65,14 @@ void GameMgr::Draw(){
 	View.Draw();
 	Object_Draw();
 	View.Draw2();
+	if (t == 60) PlaySoundMem(Ready_Sound.Handle, DX_PLAYTYPE_BACK);
+	if (t == 180) PlaySoundMem(Start_Sound.Handle, DX_PLAYTYPE_BACK);
+
+	if (t >= 61 && t <=120) DrawGraph(280, 120, Ready_Graph.Handle, TRUE);
+	if (t >= 170 && t <= 200) DrawGraph(280, 120, Start_Graph.Handle, TRUE);
+
+	clsDx();
+	printfDx("t = %d, time = %d", t, time);
 }
 
 void GameMgr::Object_Draw()
@@ -88,7 +86,15 @@ void GameMgr::Init(){
 	//テスト用のオブジェクトの設置
 	player[0] = new C_Player(0);
 	player[1] = new C_Player(1);
-	
+
+	//ステータス変更点(炎)
+	Status[HONO].slash_A = HONO_SLASH_A;
+
+	//ステータス変更点(水)
+
+	//ステータス変更点(木)
+
+
 }
 void GameMgr::Finish(){
 	//モード遷移時に削除したいオブジェクトを
@@ -96,7 +102,7 @@ void GameMgr::Finish(){
 	C_Player::AllDelete();
 	C_HitBox::AllDelete();
 
-	StopSoundMem(G_MUSIC_00);
+	StopSoundMem(Battle_Sound.Handle);
 }
 
 GameMgr* m_GameMgr;

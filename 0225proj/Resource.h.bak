@@ -27,6 +27,32 @@ public:
 private:
 	
 };
+class C_Font {
+public:
+	int Handle;
+	void Load(const char* fontname, const char* filename, int fontsize = -1, int thick = -1, int fonttype = -1);
+};
+
+class C_Sound {
+public:
+	int Handle;
+	void Load(const char* filename);
+
+};
+
+
 extern C_Graph P_Graph[2];
 extern C_Graph Back_Graph[4];
+extern C_Graph Timer_Graph;
+extern C_Graph HpFrame_Graph;
+extern C_Graph HpBar_Graph;
+extern C_Graph Ready_Graph;
+extern C_Graph Start_Graph;
+extern C_Graph SelectBack_Graph;
+extern C_Font OldEng_Font;
+extern C_Sound Ready_Sound;
+extern C_Sound Start_Sound;
+extern C_Sound Select_Sound;
+extern C_Sound Battle_Sound;
+
 #endif

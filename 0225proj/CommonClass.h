@@ -66,7 +66,7 @@ public:
 	Vector2 v[4];//必ずv[0]..top v[1]...bottom v[2]...right v[3]...leftにすること
 	//四角形の中に引数の頂点があるか
 	bool inSquare(Vector2 _v) {
-		if (!(_v.y <= v[1].y && _v.y >= v[0].y)) { 
+		if (!(_v.y < v[1].y && _v.y > v[0].y)) { 
 			return false; 
 		}
 		if (!(_v.x >= v[3].x && _v.x <= v[2].x)) { 

@@ -8,6 +8,7 @@
 #include "HitBox.h"
 #include"anime.h"
 #include "GameMgr.h"
+#include"View.h"
 //////////////////////
 //派生クラスPlayer
 //・プロジェクトに追加したのち
@@ -38,7 +39,6 @@ C_Player::~C_Player() {
 }
 
 void C_Player::Init() {
-
 	//どっち側のplayerなのか
 	playerid = arraynum;
 	//初期向き
@@ -74,17 +74,19 @@ void C_Player::Init() {
 	ObjectBase::SetUpperLeft();
 
 	//防御のあたり判定
-	Vector2 V,V2;
+	Vector2 V, V2;
 	V.Set(50, 50);
 	V2.Set(0, 0);
-	int p = MakeHitBox(V2, V,H_DEFENCE);
-	
+	int p = MakeHitBox(V2, V, H_DEFENCE);
+
 
 	for (int i = 0; i < H_HitMode_N; i++)
 		hitbox_exi[i] = false;
-	Vector2 V = { 0, 0 };
-	int p = MakeHitBox(V, V, H_DEFENCE);
-	HitBox[p]->Next_Hitmode = H_DEFENCE;
+	Vector2 V0 = { 0, 0 };
+	//int p2 = MakeHitBox(V0, V0, H_DEFENCE);
+	//HitBox[p2]->Next_Hitmode = H_DEFENCE;
+
+	Chara = m_GameMgr->Status[HONO];
 }
 
 void C_Player::Exit()
@@ -93,13 +95,34 @@ void C_Player::Exit()
 
 bool C_Player::IsRange()
 {
+
 	if (playerid == 0) {
+		/*
+		  UpperLeft_pos.x = pos.x - (Graph.size.x / 2);
+		  UpperLeft_pos.y = pos.y - (Graph.size.y / 2);
+		  LowerRight_pos.x = UpperLeft_pos.x + Graph.size.x;
+		  LowerRight_pos.y = UpperLeft_pos.y + Graph.size.y;
+	  */
+	  //計測用に左上座標を求める
+		Vector2 v1; v1.x = pos.x - (Graph.size.x / 2); v1.y = pos.y - (Graph.size.y / 2);
+		//壁より向こうへは行けない
+		if (v1.x < 0) {
+			return false;
+		}
+		//相手から一定以上離れなれない
 		if ((abs(pos.x - player[1]->pos.x) + PLAYERWIDTH) < WINDOW_X)
 			return true;
 		else
 			return false;
+
 	}
 	else if (playerid == 1) {
+		//計測用に右下座標を求める
+		Vector2 v2; v2.x = pos.x + (Graph.size.x / 2); v2.y = pos.y + (Graph.size.y / 2);
+		if (v2.x > View.Back_G.size.x) {
+			return false;
+		}
+
 		if ((abs(pos.x - player[0]->pos.x) + PLAYERWIDTH) < WINDOW_X)
 			return true;
 		else
@@ -110,13 +133,17 @@ bool C_Player::IsRange()
 
 bool C_Player::CanMove()
 {
-	if (Main_State != DEFAULT && Main_State != SLASHCHARGE)
+	if (Main_State == DEFAULT || Main_State == SLASHCHARGE)
+		return true;
+	else
 		return false;
 }
 
 bool C_Player::CanMakeHitBox()
 {
-	if (Main_State != DEFAULT)
+	if (Main_State == DEFAULT)
+		return true;
+	else
 		return false;
 }
 
@@ -131,13 +158,13 @@ int C_Player::MakeHitBox(Vector2 _v0, Vector2 _v1, E_HitMode State) {
 	HitBox[ary]->pos.y = (HitBox[ary]->area.v[0].y + HitBox[ary]->area.v[1].y) / 2;
 	//HitBox[arynum]->Next_State = State;
 	switch (State) {
-		case H_DEFENCE:hitbox_p[H_DEFENCE] = HitBox[arynum]; break;
-		case SLASHCHARGE:hitbox_p[H_SLASHCHARGE] = HitBox[arynum]; break;
-		case H_SLASH:hitbox_p[H_SLASH] = HitBox[arynum]; break;
-		case H_SHOT:hitbox_p[H_SHOT] = HitBox[arynum]; break;
-		case H_COUNTER:hitbox_p[H_COUNTER] = HitBox[arynum]; break;
-	//case SLASHCHARGE:hitbox_p[H_SLASHCHARGE] = HitBox[ary]; break;
-	//case :hitbox_p[H_SLASHCHARGE] = HitBox[ary]; break;
+	case H_DEFENCE:hitbox_p[H_DEFENCE] = HitBox[ary]; break;
+	case SLASHCHARGE:hitbox_p[H_SLASHCHARGE] = HitBox[ary]; break;
+	case H_SLASH:hitbox_p[H_SLASH] = HitBox[ary]; break;
+	case H_SHOT:hitbox_p[H_SHOT] = HitBox[ary]; break;
+	case H_COUNTER:hitbox_p[H_COUNTER] = HitBox[ary]; break;
+		//case SLASHCHARGE:hitbox_p[H_SLASHCHARGE] = HitBox[ary]; break;
+		//case :hitbox_p[H_SLASHCHARGE] = HitBox[ary]; break;
 	}
 	hitbox_exi[State] = true;
 	hitbox_p[State] = HitBox[ary];
@@ -164,29 +191,37 @@ void C_Player::Process() {
 	//状態遷移
 	Pre_State = Main_State;
 	Main_State = Next_State;
-	
+
+	//ゲーム開始直後は行動不可
+	//if (t < START_FRAME)
+	//	return;
 
 	//プレイヤーの状態に合わせて関数を実行
 	switch (Main_State) {
-	case DEFAULT:    Default();break;
-	case SLASHCHARGE:SlashCharge();break;
-	case SLASH:      Slash();break;
-	case SHOT: Shot();break;
-	case COUNTER:    Counter();break;
-	case STUN:       Stun();break;
+	case DEFAULT:    Default(); break;
+	case SLASHCHARGE:SlashCharge(); break;
+	case SLASH:      Slash(); break;
+	case SHOT: Shot(); break;
+	case COUNTER:    Counter(); break;
+	case STUN:       Stun(); break;
+	case DAMEGE:     Damege(); break;
 	}
-	
-	
-	if (IsRange()) {
+
+
+	if (/*IsRange() && */CanMove()) {
 		if (Pad[playerid].Right) {
 			pos.x += PLAYERSPEED;
 			while (!IsRange())
 				pos.x--;
 		}
+		Push_Out();
+
 		if (Pad[playerid].Left) {
 			pos.x -= PLAYERSPEED;
-			while (!IsRange())
+			while (!IsRange()) {
 				pos.x++;
+			}
+			Push_Out();
 		}
 
 		//ステージ端から出ないように。 1ドット単位のズレあるかも
@@ -210,7 +245,7 @@ void C_Player::Default() {
 	//Zキーが押されたら
 	if (Pad[playerid].Button[PAD_Z] == 1 /*&& Main_State == DEFAULT*/) {
 		//通常攻撃用のあたり判定を作成
-		int p = MakeHitBox(slash_1, slash_2, H_SLASHCHARGE);
+		//int p = MakeHitBox(slash_1, slash_2, H_SLASHCHARGE);
 		Vector2 V1, V2;
 		V1.Set(0, -(SLASH_HEIGHT / 2));
 		V2.Set(0, (SLASH_HEIGHT / 2));
@@ -239,15 +274,18 @@ void C_Player::Default() {
 		HitBox[p]->Next_Hitmode = H_COUNTER;
 		//Stateの変更
 		Next_State = COUNTER;
-	}	
+	}
 
 }
 
 void C_Player::SlashCharge()
 {
+
+	if (hitbox_exi[H_SLASHCHARGE] == true && hitbox_p[H_SLASHCHARGE]->Next_Hitmode == H_NONE)
+		Next_State = DEFAULT;
 	//このモードの間
 	//Zキーが離されたら
-	if (Pad[playerid].Button[PAD_Z] == 0 ) {
+	if (Pad[playerid].Button[PAD_Z] == 0) {
 		Next_State = SLASH;
 		//ヒットボックスの状態を変える
 		hitbox_p[H_SLASH] = hitbox_p[H_SLASHCHARGE];
@@ -264,28 +302,129 @@ void C_Player::SlashCharge()
 
 void C_Player::Slash()
 {
-	if (state_t >= 8) {
+	//カウンターであるフラグをオフに
+	Counterattack = false;
+	if (hitbox_exi[H_SLASH] == true && hitbox_p[H_SLASH]->Next_Hitmode == H_NONE)
+		Next_State = DEFAULT;
+	/*if (state_t >= 8) {
 		Next_State = STUN;
-	}
+	}*/
 	/*if (HitBox[i]->pos.x < slashrange)
 		HitBox[i]->pos.x += 6;
 	else
 		HitBox[i]->Main_State = STUN;*/
 }
 
-void C_Player::LongAttack()
+void C_Player::Shot()
 {
+	if (hitbox_exi[H_SHOT] == true && hitbox_p[H_SHOT]->Next_Hitmode == H_NONE)
+		Next_State = DEFAULT;
+	/*if (state_t >= 8) {
+		Next_State = STUN;
+	}*/
 }
 
 void C_Player::Counter()
 {
+	if (hitbox_p[H_COUNTER]->Next_Hitmode == H_NONE)
+		Next_State = DEFAULT;
+	/*
+	if (state_t >= 8) {
+		Next_State = STUN;
+	}*/
 }
 
 void C_Player::Stun()
 {
-	if (state_t > 16) {
+	//一旦カウンター受けたときのスタンとして使用
+	/*
+	if (hitbox_exi[H_SLASH] == true && hitbox_p[H_SLASH]->Next_Hitmode == H_NONE)
 		Next_State = DEFAULT;
+
+	if (hitbox_exi[H_SHOT] == true && hitbox_p[H_SHOT]->Next_Hitmode == H_NONE)
+		Next_State = DEFALT;
+
+	if (hitbox_exi[H_COUNTER] == true && hitbox_p[H_COUNTER]->Next_Hitmode == H_NONE)
+		Next_State = DEFAULT;
+		*/
+
+	if (state_t < stanframe)
+		return;
+	Next_State = DEFAULT;
+
+}
+
+void C_Player::Damege() {
+	//printfDx("dd");
+	//ダメージを受ける
+	if (!dameged) {
+		dameged = true;
+		HP -= DamegeStatus.power;
 	}
+	//後方にノックバック
+	if (IsRange()) {
+		pos.x -= direction * DamegeStatus.backspeed;
+		back += 8;
+		if (!IsRange()) {
+			pos.x += direction * DamegeStatus.backspeed;
+
+		}
+	}
+	//ノックバックをやめる条件
+	if (back >= DamegeStatus.nockback) {
+		Next_State = DEFAULT;
+		back = 0;
+		dameged = false;
+	}
+
+}
+
+void C_Player::Push_Out()
+{/*
+	if (hitbox_exi[H_DEFENCE]) {
+		for (int i = 0; i < HITBOX_MAX; i++) {
+			if (HitBox[i] == nullptr) { continue; }
+			if (HitBox[i]->Hitmode == H_DEFENCE && HitBox[i]->player->playerid != playerid) {
+				for (int j = 0; j < 4; j++) {
+					while (HitBox[i]->abs_area.inSquare(hitbox_p[H_DEFENCE]->abs_area.v[j])) {
+						HitBox[i]->player->pos.x += direction;
+						HitBox[i]->abs_area.Set2p(HitBox[i]->area.v[0].x + HitBox[i]->player->pos.x, HitBox[i]->area.v[0].y + HitBox[i]->player->pos.y, HitBox[i]->area.v[1].x + HitBox[i]->player->pos.x, HitBox[i]->area.v[1].y + HitBox[i]->player->pos.y);
+					}
+					if (!HitBox[i]->player->IsRange()) {
+						while (!HitBox[i]->player->IsRange()) {
+							HitBox[i]->player->pos.x -= direction;
+							HitBox[i]->abs_area.Set2p(HitBox[i]->area.v[0].x + HitBox[i]->player->pos.x, HitBox[i]->area.v[0].y + HitBox[i]->player->pos.y, HitBox[i]->area.v[1].x + HitBox[i]->player->pos.x, HitBox[i]->area.v[1].y + HitBox[i]->player->pos.y);
+						}
+						HitBox[i]->player->Push_Out();
+					}
+					while (!HitBox[i]->player->IsRange()) {
+						HitBox[i]->player->pos.x += HitBox[i]->player->direction;
+						pos.x += HitBox[i]->player->direction;
+					}
+				}
+			}
+		}
+	}
+	*/
+	for (int i = 0; i < PLAYER_MAX; i++) {
+		if (player[i] == nullptr) { continue; }
+		//自分以外のプレイヤーが
+		if (player[i]->playerid != playerid) {
+			//間合いにいる限り
+			while (abs(player[i]->pos.x - pos.x) < PLAYERWIDTH/2) {
+				//進行方向に押し出す
+				player[i]->pos.x += direction;
+			}
+			//押し出したプレイヤーがカメラ範囲を飛び出していたら
+			while (!player[i]->IsRange()) {
+				//飛び出した分お互いに戻る。
+				pos.x -= direction;
+				player[i]->pos.x -= direction;
+			}
+		}
+		
+	}
+
 }
 
 void C_Player::Draw() {
@@ -293,16 +432,17 @@ void C_Player::Draw() {
 	case DEFAULT:BoxColor = RED; break;
 	case SLASHCHARGE:BoxColor = BLUE; break;
 	case SLASH:BoxColor = GREEN; break;
-	case LONGATTACK:BoxColor = YELLOW; break;
+	case SHOT:BoxColor = YELLOW; break;
 	case COUNTER:BoxColor = PURPLE; break;
 	case STUN:BoxColor = LIGHT_GREEN; break;
+	case DAMEGE:BoxColor = BLACK; break;
 	default:BoxColor = RED; break;
 	}
 
 	ObjectBase::Draw();
 	//仮置きの正方形描画
 	if (DEBUG) {
-		//DrawBox(UpperLeft_pos.x - Camera.UpperLeft_pos.x, UpperLeft_pos.y, UpperLeft_pos.x + Graph.size.x - Camera.UpperLeft_pos.x, UpperLeft_pos.y + Graph.size.y, BoxColor, 1);
+		DrawBox(UpperLeft_pos.x - Camera.UpperLeft_pos.x, UpperLeft_pos.y, UpperLeft_pos.x + Graph.size.x - Camera.UpperLeft_pos.x, UpperLeft_pos.y + Graph.size.y, BoxColor, 1);
 		//状態を表示
 		DrawFormatString(UpperLeft_pos.x - Camera.UpperLeft_pos.x, UpperLeft_pos.y, BLACK, "%d", Main_State);
 	}
@@ -371,6 +511,8 @@ void C_Player::AllDelete() {
 		}
 	}
 }
+
+
 
 int C_Player::GetObject_n() {
 	return object_n;

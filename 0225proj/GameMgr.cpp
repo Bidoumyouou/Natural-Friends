@@ -9,6 +9,8 @@
 #include"Camera.h"
 #include"View.h"
 #include"HitBox.h"
+
+#include"Effect.h"
 //////////////////////
 //GameMgrクラス
 //旧来のクラスを使わないプログラムでいうところの
@@ -25,6 +27,9 @@ GameMgr::GameMgr(){
 	View.init();
 	View.mgr = this;//Viewクラスに
 	stagesize = View.Back_G.size.x;//フィールドのサイズ（現在は画像サイズに依存）
+	t = 0;
+	time = 99;
+	PlaySoundMem(Battle_Sound.Handle, DX_PLAYTYPE_LOOP);
 }
 
 GameMgr::~GameMgr(){
@@ -38,6 +43,8 @@ void GameMgr::Process(){
 
 	//時間経過を測る
 	t++;
+	if (t >= START_FRAME && t % 60 == 0) time--;
+	if (time < 0) time = 0;
 
 	Object_Process();
 	//Tが押されたらクラス一発作成
@@ -52,6 +59,7 @@ void GameMgr::Object_Process()
 	
 	C_Player::AllProcess();
 	C_HitBox::AllProcess();
+	C_Effect::AllProcess();
 	//deleteflagをtrueにしたHitBoxを削除する
 }
 
@@ -60,12 +68,21 @@ void GameMgr::Draw(){
 	View.Draw();
 	Object_Draw();
 	View.Draw2();
+	if (t == 60) PlaySoundMem(Ready_Sound.Handle, DX_PLAYTYPE_BACK);
+	if (t == 180) PlaySoundMem(Start_Sound.Handle, DX_PLAYTYPE_BACK);
+
+	if (t >= 61 && t <=120) DrawGraph(280, 120, Ready_Graph.Handle, TRUE);
+	if (t >= 170 && t <= 200) DrawGraph(280, 120, Start_Graph.Handle, TRUE);
+
+	clsDx();
+	printfDx("t = %d, time = %d", t, time);
 }
 
 void GameMgr::Object_Draw()
 {
 	C_Player::AllDraw();
 	C_HitBox::AllDraw();
+	C_Effect::AllDraw();
 }
 
 void GameMgr::Init(){
@@ -89,7 +106,7 @@ void GameMgr::Finish(){
 	C_Player::AllDelete();
 	C_HitBox::AllDelete();
 
-	StopSoundMem(G_MUSIC_00);
+	StopSoundMem(Battle_Sound.Handle);
 }
 
 GameMgr* m_GameMgr;

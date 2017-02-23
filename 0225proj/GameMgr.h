@@ -4,6 +4,7 @@
 #include "state.h"
 #include "StateBase.h"
 #include "Character.h"
+#include "Resource.h"
 #define START_FRAME 181
 
 //////////////////
@@ -26,6 +27,7 @@ public:
 	void Process();
 	void Draw();
 	int t;
+	int time;
 	void AllObjectProcess();
 	void AllObjectDraw();
 	Vector2 p_pos[2];

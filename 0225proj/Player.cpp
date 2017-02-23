@@ -9,6 +9,7 @@
 #include"anime.h"
 #include "GameMgr.h"
 #include"View.h"
+#include"Effect.h"
 //////////////////////
 //派生クラスPlayer
 //・プロジェクトに追加したのち
@@ -51,10 +52,10 @@ void C_Player::Init() {
 		pos.Set(640 - 100, 400 - 60);
 	}
 	if (arraynum == 1) {
-		pos.Set(640 + 100, 400 - 90);
+		pos.Set(640 + 100, 400 - 60);
 	}
 
-	Graph = P_Graph[playerid];
+	Graph = P_Graph[0];
 
 	//仮置き
 	//slash_1.Set(-20, -20); slash_2.Set(20, 20);
@@ -264,6 +265,9 @@ void C_Player::Default() {
 		HitBox[p]->Next_Hitmode = H_SHOT;
 		//Stateの変更
 		Next_State = SHOT;
+		//エフェクトのおぶじぇくとを作成
+		p = C_Effect::Make();
+		effect[p]->hitbox = hitbox_p[H_SHOT];
 	}
 
 	//Cキーが押されたら
@@ -290,6 +294,9 @@ void C_Player::SlashCharge()
 		//ヒットボックスの状態を変える
 		hitbox_p[H_SLASH] = hitbox_p[H_SLASHCHARGE];
 		hitbox_p[H_SLASHCHARGE]->Next_Hitmode = H_SLASH;
+		//エフェクトのおぶじぇくとを作成
+		int p = C_Effect::Make();
+		effect[p]->hitbox = hitbox_p[H_SLASHCHARGE];
 	}
 	//
 	//if (HitBox[i]->state_t == 60) {
@@ -448,8 +455,9 @@ void C_Player::Draw() {
 	}
 
 	int p_handle = AnimeFrame2(3, Graph.HandleArray, aniframe, &mumi, true);
+	DrawRotaGraph(pos.x - Camera.UpperLeft_pos.x, pos.y, 1.0, 0.0, Graph.Handle, 1, playerid);
 
-
+	/*
 	if (playerid == 0) {
 		DrawRotaGraph(pos.x - Camera.UpperLeft_pos.x, pos.y, 1.0, 0.0, Graph.Handle, 1, playerid);
 		//DrawRotaGraph(pos.x - Camera.UpperLeft_pos.x, pos.y, 2.0, 0.0, p_handle, 1, playerid);
@@ -457,6 +465,7 @@ void C_Player::Draw() {
 	else {
 		DrawRotaGraph(pos.x - Camera.UpperLeft_pos.x, pos.y, 2.0, 0.0, p_handle, 1, playerid);
 	}
+	*/
 	DrawPixel(pos.x - Camera.UpperLeft_pos.x, pos.y, BLUE);
 	//DrawBox(x, y, x + 100, y + 100, GetColor(255, 255, 255), 1);
 	if (DEBUG) {

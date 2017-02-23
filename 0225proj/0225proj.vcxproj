@@ -75,6 +75,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="class.cpp" />
     <ClCompile Include="CommonClass.cpp" />
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="HitBox.cpp" />
     <ClCompile Include="GameMgr.cpp" />
     <ClCompile Include="GV.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="class.h" />
     <ClInclude Include="CommonClass.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="HitBox.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="GameMgr.h" />

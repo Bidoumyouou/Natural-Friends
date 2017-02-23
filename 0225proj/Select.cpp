@@ -11,6 +11,10 @@ Select::~Select(){
 
 }
 
+void Select::Init() {
+	DrawGraph(0, 0, SelectBack_Graph.Handle, FALSE);
+}
+
 void Select::Process(){
 
 }
@@ -19,9 +23,7 @@ void Select::Draw(){
 
 }
 
-void Select::Init(){
 
-}
 void Select::Finish(){
 
 }

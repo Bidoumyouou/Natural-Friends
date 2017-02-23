@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "Player.h"
 #include "key.h"
-
+#include "GameMgr.h"
 void C_View::init()
 {
 	//画像ハンドルの適用
@@ -43,7 +43,6 @@ void C_View::Draw2()
 
 void C_View::Process()
 {
-	sprintf_s(Time_Char, "%.2d", time);
-
+	sprintf_s(Time_Char, "%.2d", m_GameMgr->time);
 }
 C_View View;
